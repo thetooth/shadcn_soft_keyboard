@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../utils/enums.dart';
 import '../utils/key_rows.dart';
@@ -8,11 +9,7 @@ class AlphanumericKeyboard extends StatefulWidget {
     required this.controller,
     this.height = 260,
     this.backgroundColor = const Color(0xff0a0a0a),
-    this.actionKeyColor = const Color(0xff171717),
-    this.alphanumericKeyColor = const Color(0xff2d2d2d),
     this.showSpaceKeyIcon = false,
-    this.numericKeyTextStyle,
-    this.alphaNumericKeyTextStyle,
     this.spaceKeyIcon,
     this.enterKeyIcon,
     this.backspaceKeyIcon,
@@ -21,8 +18,6 @@ class AlphanumericKeyboard extends StatefulWidget {
     this.capsLockKeyIcon,
     this.capsUnlockKeyIcon,
     this.firstLetterCapitalizationColor = Colors.blue,
-    this.keyBorderRadius = 10,
-    this.actionKeyIconColor = Colors.white,
     this.onEnterTapped,
     super.key,
   });
@@ -36,20 +31,8 @@ class AlphanumericKeyboard extends StatefulWidget {
   /// The color for the keyboard background
   final Color backgroundColor;
 
-  /// The color for the action keys
-  final Color actionKeyColor;
-
-  /// The color for the alphanumeric keys
-  final Color alphanumericKeyColor;
-
   /// Whether to show the space key icon or not, default is false
   final bool showSpaceKeyIcon;
-
-  /// The text style for the numeric keys
-  final TextStyle? numericKeyTextStyle;
-
-  /// The text style for the alphabets and symbols keys
-  final TextStyle? alphaNumericKeyTextStyle;
 
   /// The icon to show on space key
   final IconData? spaceKeyIcon;
@@ -74,12 +57,6 @@ class AlphanumericKeyboard extends StatefulWidget {
 
   /// The icon color when firstLetterCapitalization is enabled
   final Color firstLetterCapitalizationColor;
-
-  /// The border radius for the keys
-  final double keyBorderRadius;
-
-  /// Action key icon color
-  final Color actionKeyIconColor;
 
   /// Callback Function for Enter Key
   final Function()? onEnterTapped;
@@ -114,40 +91,20 @@ class _AlphanumericKeyboardState extends State<AlphanumericKeyboard> {
 
   // Renders the number keys
   Widget numberKey(String kKey) {
-    return InkWell(
-      onTap: () {
+    return ShadButton.secondary(
+      onPressed: () {
         widget.controller.text += kKey;
       },
-      borderRadius: BorderRadius.circular(widget.keyBorderRadius),
-      child: Container(
-        decoration: BoxDecoration(
-          color: widget.alphanumericKeyColor,
-          borderRadius: BorderRadius.circular(widget.keyBorderRadius),
-        ),
-        constraints: const BoxConstraints(
-          minWidth: 30,
-          minHeight: 35,
-        ),
-        margin: const EdgeInsets.all(3.5),
-        child: Center(
-          child: Text(
-            kKey,
-            style: widget.numericKeyTextStyle ??
-                const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
+      child: Text(
+        kKey,
       ),
     );
   }
 
   // Renders the alphabet keys
   Widget alphabetKey(String kKey) {
-    return InkWell(
-      onTap: () {
+    return ShadButton.secondary(
+      onPressed: () {
         widget.controller.text += capitalization == Capitalization.lowerCase
             ? kKey.toLowerCase()
             : kKey;
@@ -157,30 +114,8 @@ class _AlphanumericKeyboardState extends State<AlphanumericKeyboard> {
           });
         }
       },
-      borderRadius: BorderRadius.circular(widget.keyBorderRadius),
-      child: Container(
-        decoration: BoxDecoration(
-          color: widget.alphanumericKeyColor,
-          borderRadius: BorderRadius.circular(widget.keyBorderRadius),
-        ),
-        constraints: const BoxConstraints(
-          minWidth: 30,
-          minHeight: 40,
-        ),
-        margin: const EdgeInsets.all(3.5),
-        child: Center(
-          child: Text(
-            capitalization == Capitalization.lowerCase
-                ? kKey.toLowerCase()
-                : kKey,
-            style: widget.alphaNumericKeyTextStyle ??
-                const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
+      child: Text(
+        capitalization == Capitalization.lowerCase ? kKey.toLowerCase() : kKey,
       ),
     );
   }
@@ -188,8 +123,7 @@ class _AlphanumericKeyboardState extends State<AlphanumericKeyboard> {
   // Returns the icon for the action keys
   Widget? getActionKeyIcon(SpecialKey key) {
     IconData iconData;
-    Color iconColor = widget.actionKeyIconColor;
-    double iconSize = 24;
+    Color iconColor = ShadTheme.of(context).colorScheme.primaryForeground;
 
     if (key == SpecialKey.capsLock) {
       iconData = capitalization == Capitalization.upperCase
@@ -204,7 +138,7 @@ class _AlphanumericKeyboardState extends State<AlphanumericKeyboard> {
     } else if (key == SpecialKey.space) {
       iconData = widget.spaceKeyIcon ?? Icons.space_bar;
       if (widget.showSpaceKeyIcon == false) {
-        iconColor = widget.actionKeyColor;
+        iconColor = ShadTheme.of(context).colorScheme.primary;
       }
     } else if (key == SpecialKey.enter) {
       iconData = widget.enterKeyIcon ?? Icons.keyboard_return;
@@ -217,14 +151,18 @@ class _AlphanumericKeyboardState extends State<AlphanumericKeyboard> {
     return Icon(
       iconData,
       color: iconColor,
-      size: iconSize,
     );
   }
 
   // Renders the action keys
   Widget actionKey(SpecialKey kKey) {
-    return InkWell(
-      onTap: () {
+    return ShadButton(
+      onLongPress: () {
+        if (kKey == SpecialKey.backspace) {
+          widget.controller.text = '';
+        }
+      },
+      onPressed: () {
         if (kKey == SpecialKey.backspace) {
           if (widget.controller.text.isNotEmpty) {
             widget.controller.text = widget.controller.text
@@ -262,24 +200,7 @@ class _AlphanumericKeyboardState extends State<AlphanumericKeyboard> {
           });
         }
       },
-      borderRadius: BorderRadius.circular(widget.keyBorderRadius),
-      child: Container(
-        decoration: BoxDecoration(
-          color: widget.actionKeyColor,
-          borderRadius: BorderRadius.circular(widget.keyBorderRadius),
-        ),
-        constraints: const BoxConstraints(
-          minWidth: 30,
-          minHeight: 40,
-        ),
-        margin: const EdgeInsets.all(3.5),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: getActionKeyIcon(kKey),
-          ),
-        ),
-      ),
+      child: getActionKeyIcon(kKey),
     );
   }
 

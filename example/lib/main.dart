@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:soft_keyboard/soft_keyboard.dart';
+import 'package:shadcn_soft_keyboard/shadcn_soft_keyboard.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,8 +54,6 @@ class _MainScreenState extends State<MainScreen> {
             },
             height: 260,
             backgroundColor: Colors.black,
-            actionKeyColor: Colors.blueGrey,
-            alphanumericKeyColor: Colors.indigo,
             backspaceKeyIcon: Icons.backspace,
             enterKeyIcon: Icons.keyboard_return,
           ),
@@ -65,7 +63,6 @@ class _MainScreenState extends State<MainScreen> {
               log("hide keyboard");
             },
             backgroundColor: Colors.black,
-            actionKeyColor: Colors.blueGrey,
             backspaceKeyIcon: Icons.backspace,
             enterKeyIcon: Icons.keyboard_return,
           ),

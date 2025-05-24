@@ -1,4 +1,4 @@
-name: soft_keyboard
+name: shadcn_soft_keyboard
 description: A customizable soft keyboard to use instead of the built in non-customizable keyboard of any phone.
 version: 0.2.0
 
@@ -12,6 +12,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shadcn_ui: ^0.26.0
 
 dev_dependencies:
   flutter_test:
